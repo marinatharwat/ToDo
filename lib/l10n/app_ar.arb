@@ -1,0 +1,18 @@
+{
+"to_do_list":"قائمه المهام",
+"task_list":"قائمة المهام",
+ "setting":"الاعدادات",
+   "arabic":"عربى",
+   "english":"الانجليزيه",
+   "language":"العربية",
+    "theme":"النمط",
+      "light":"مضئ",
+      "dark":"ليلى",
+    "add_new_task": "إضافة مهمة جديدة",
+   "enter_task_title": "أدخل عنوان المهمة",
+   "enter_task_description":"أدخل وصف المهمة",
+   "select_date": "اختر التاريخ",
+   "please_title": "الرجاء إدخال عنوان المهمة",
+   "please_description": "الرجاء إدخال وصف المهمة",
+   "task":"المهمه"
+}
