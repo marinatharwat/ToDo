@@ -1,6 +1,10 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
+import 'package:todo/Auth/login/login_screen.dart';
 import 'package:todo/list_task/add_task_bottom_sheet.dart';
 import 'package:todo/my_theme.dart';
+import 'package:todo/providers/app_confing_provider.dart';
+import 'package:todo/providers/auth.provider.dart';
 import 'package:todo/setting/setting_screen.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
@@ -19,13 +23,24 @@ class _HomeScreenState extends State<HomeScreen> {
 
   @override
   Widget build(BuildContext context) {
-    // var provider = Provider.of<AppConfigProvider>(context);
+    var provider = Provider.of<AppConfigProvider>(context);
+    var  authProvider= Provider.of<AuthProviders>(context,listen: false);
 
     return Scaffold(
       appBar: AppBar(
        toolbarHeight: MediaQuery.of(context).size.height/5,
-        title:  Text( AppLocalizations.of(context)!.to_do_list,
-          style: Theme.of(context).textTheme.titleLarge,),
+        title:  Text('${AppLocalizations.of(context)?.to_do_list} ${authProvider.currentUser!.name!}',
+
+    style: Theme.of(context).textTheme.titleLarge,),
+        actions: [
+          IconButton(onPressed:(){
+            authProvider.currentUser =null;
+            provider.tasksList=[];
+            Navigator.pushReplacementNamed(context, LoginScreen.routeName);
+          },
+
+              icon: const Icon(Icons.logout_outlined,color: Colors.white,))
+        ],
         centerTitle: false,
       ),
       bottomNavigationBar: Theme(

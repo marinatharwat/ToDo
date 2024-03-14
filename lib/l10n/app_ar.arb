@@ -14,5 +14,22 @@
    "select_date": "اختر التاريخ",
    "please_title": "الرجاء إدخال عنوان المهمة",
    "please_description": "الرجاء إدخال وصف المهمة",
-   "task":"المهمه"
+   "task":"المهمه",
+     "login":"تسجيل الدخول",
+     "welcome":"مرحبًا بعودتك!",
+     "email":"البريد الإلكتروني",
+     "password":"كلمة المرور",
+     "or_create":"أو إنشاء حساب",
+     "please_email":"الرجاء إدخال البريد الإلكتروني",
+      "please_password":"من فضلك أدخل كلمة المرور",
+       "char_password":"يجب أن تتكون كلمة المرور من 6 أحرف على الأقل",
+         "valid_email":"الرجاء إدخال بريد إلكتروني صحيح",
+           "create_account":"إنشاء حساب",
+            "user_name":"اسم المستخدم",
+            "please_enter_userName":"الرجاء إدخال اسم المستخدم",
+            "confirm_password":"تأكيد كلمة المرور",
+            "please_confirm_password":"الرجاء إدخال تأكيد كلمة المرور",
+            "dont_match" :"تأكيد كلمة المرور لا تطابق كلمة المرور",
+             "login_successfully":"Login Successfully",
+               "register_successfully":"Register successfully"
 }

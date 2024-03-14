@@ -1,10 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:todo/dialog_utils.dart';
 import 'package:todo/firebase_utils.dart';
 import 'package:todo/model/task.dart';
 import 'package:todo/my_theme.dart';
 import 'package:todo/providers/app_confing_provider.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:todo/providers/auth.provider.dart';
 
 class AddTaskBottomSheet extends StatefulWidget {
   const AddTaskBottomSheet({Key? key}) : super(key: key);
@@ -18,10 +20,10 @@ class _AddTaskBottomSheetState extends State<AddTaskBottomSheet> {
   var fromKey = GlobalKey<FormState>();
   String title = '';
   String description = '';
-
+  late AppConfigProvider provider;
   @override
   Widget build(BuildContext context) {
-    var provider = Provider.of<AppConfigProvider>(context);
+     provider = Provider.of<AppConfigProvider>(context);
 
     return Padding(
       padding:  const EdgeInsets.all(8.0),
@@ -56,8 +58,12 @@ class _AddTaskBottomSheetState extends State<AddTaskBottomSheet> {
                                 }
                                 return null;
                               },
+                              style: TextStyle(
+                                color: provider.isDarkMode() ? Colors.white : Colors.black, // Set text color based on dark mode
+                              ),
                               decoration:  InputDecoration(
                                 hintText: AppLocalizations.of(context)?.enter_task_title,
+
                                 hintStyle:  TextStyle(fontSize: 16,color:provider.isDarkMode()?
                                 MyTheme.whiteColor:
                                 MyTheme.blackColor, ),
@@ -76,6 +82,9 @@ class _AddTaskBottomSheetState extends State<AddTaskBottomSheet> {
                                 }
                                 return null;
                               },
+                              style: TextStyle(
+                                color: provider.isDarkMode() ? Colors.white : Colors.black, // Set text color based on dark mode
+                              ),
                               decoration:  InputDecoration(
                                 hintText: AppLocalizations.of(context)?.enter_task_description,
                                 hintStyle:  TextStyle(fontSize: 16,color:provider.isDarkMode()?
@@ -163,11 +172,26 @@ class _AddTaskBottomSheetState extends State<AddTaskBottomSheet> {
   }
 
   void addTask() {
+
     if (fromKey.currentState?.validate() == true) {
       Task task= Task(title: title, description: description, dateTime: selectedDate);
-      FirebaseUtils.addTaskToFirestore(task).timeout(const Duration(milliseconds:500 ),
+      var  authProvider= Provider.of<AuthProviders>(context,listen: false);
+
+      FirebaseUtils.addTaskToFirestore(task,authProvider.currentUser!.id!).
+      then((value){
+        print('task add successfully ');
+        Navigator.pop(context);
+
+        DialogUtils.showMessage(context: context, message: 'Task Add Successfully',);
+
+        provider.getAllTasksFromFireStore(authProvider.currentUser!.id??"");
+      })
+
+      .timeout(const Duration(milliseconds:500 ),
       onTimeout:() {
         print('task add successfully ');
+        DialogUtils.showMessage(context: context, message: 'task add successfully');
+        provider.getAllTasksFromFireStore(authProvider.currentUser!.id??"");
         Navigator.pop(context);
       }
       );

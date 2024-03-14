@@ -5,6 +5,8 @@ import 'package:todo/list_task/task_list_item.dart';
 import 'package:todo/model/task.dart';
 import 'package:todo/my_theme.dart';
 import 'package:todo/providers/app_confing_provider.dart';
+import 'package:todo/providers/auth.provider.dart';
+
 class ListTaskScreen extends StatefulWidget {
   const ListTaskScreen({super.key});
 
@@ -13,64 +15,62 @@ class ListTaskScreen extends StatefulWidget {
 }
 
 class _ListTaskScreenState extends State<ListTaskScreen> {
-  List <Task> tasksList=[];
-  DateTime selectDate=DateTime.now();
-
+  List<Task> tasksList = [];
+  DateTime selectDate = DateTime.now();
 
   @override
   Widget build(BuildContext context) {
-    var provider= Provider.of<AppConfigProvider>(context);
+    var provider = Provider.of<AppConfigProvider>(context);
+    var  authProvider= Provider.of<AuthProviders>(context,listen: false);
+    if(provider.tasksList.isEmpty){
+      provider.getAllTasksFromFireStore(authProvider.currentUser!.id??"");
+    }
+   print("after  calling get all tasks");
+    return Column(
+      children: [
+        EasyDateTimeLine(
+          initialDate: provider.selectDate,
+          onDateChange: (date) {
+            provider.changeSelectDate(date,authProvider.currentUser!.id??"");
+          },
+          headerProps: const EasyHeaderProps(
+            monthPickerType: MonthPickerType.switcher,
+            dateFormatter: DateFormatter.fullDateDMY(),
+          ),
 
-
-    provider. getAllTasksFromFireStore();
-
-
-    return Container(
-      child: Column(
-        children: [
-          EasyDateTimeLine(
-            initialDate:provider.selectDate,
-            onDateChange: (selectedDate) {
-              provider.changeSelectDate(selectedDate);
-            },
-            headerProps: const EasyHeaderProps(
-              monthPickerType: MonthPickerType.switcher,
-              dateFormatter: DateFormatter.fullDateDMY(),
-            ),
-
-            dayProps: EasyDayProps(
-              borderColor:
-              provider.isDarkMode()?
-            MyTheme.primaryLight:
-            MyTheme.whiteColor,
-              dayStructure: DayStructure.dayStrDayNum,
-              activeDayStyle: DayStyle(
-                decoration: BoxDecoration(
-                  borderRadius: const BorderRadius.all(Radius.circular(8)),
-                  gradient: LinearGradient(
-                    begin: Alignment.topCenter,
-                    end: Alignment.bottomCenter,
-                    colors: [
-                      MyTheme.primaryLight,
-                      MyTheme.primaryDark,
-                    ],
-                  ),
+          dayProps: EasyDayProps(
+            borderColor: provider.isDarkMode()
+                ? MyTheme.primaryLight
+                : MyTheme.whiteColor,
+            dayStructure: DayStructure.dayStrDayNum,
+            activeDayStyle: DayStyle(
+              decoration: BoxDecoration(
+                borderRadius: const BorderRadius.all(Radius.circular(8)),
+                gradient: LinearGradient(
+                  begin: Alignment.topCenter,
+                  end: Alignment.bottomCenter,
+                  colors: [
+                    MyTheme.primaryLight,
+                    MyTheme.primaryDark,
+                  ],
                 ),
               ),
             ),
           ),
-          Expanded(
-            child: ListView.builder(
-              itemBuilder:(context,index){
-                return    ItemTask(task:provider.tasksList[index]);
-              },
-              itemCount: provider.tasksList.length,
+        ),
+        Expanded(
+          child: ListView.builder(
+            itemCount: provider.tasksList.length,
+            itemBuilder: (context, index) {
+              return Padding(
+                padding: const EdgeInsets.symmetric(vertical: 8.0),
+                child: ItemTask(task: provider.tasksList[index]),
+              );
+            },
+          ),
+        ),
 
-            ),
-          )
-
-        ],
-      ),
+      ],
     );
   }
 }

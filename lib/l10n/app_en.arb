@@ -15,8 +15,23 @@
   "select_date":"Select Date",
   "please_title": "Please Enter Task title",
   "please_description": "Please Enter Task Description",
-  "task":"Task"
-
-
+  "task":"Task",
+  "login":"Login",
+  "welcome":"Welcome Back!",
+  "email":"Email",
+  "password":"Password",
+  "or_create":"OR Create Account",
+  "please_email":"please Enter Email",
+   "please_password":"please Enter password",
+   "char_password":"password should be at least 6 characters",
+   "valid_email":"please Enter valid Email",
+   "create_account":"Create Account",
+   "user_name":"User Name",
+   "please_enter_userName":"please Enter UserName",
+   "confirm_password":"Confirm Password",
+   "please_confirm_password":"please Enter Confirm Password",
+   "dont_match" :"Confirm password don't match password",
+   "login_successfully":"تم تسجيل الدخول بنجاح",
+   "register_successfully":"تم التسجيل بنجاح"
 
 }

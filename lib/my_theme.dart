@@ -20,11 +20,11 @@ class MyTheme {
           selectedItemColor: primaryLight,
           showUnselectedLabels: true),
 
-      appBarTheme:  AppBarTheme(
+      appBarTheme:  const AppBarTheme(
         color: MyTheme.primaryLight,
         elevation: 0,
         centerTitle: true,
-        iconTheme:IconThemeData(color: blackColor)
+        iconTheme:IconThemeData(color: primaryLight)
       ),
       bottomSheetTheme:  BottomSheetThemeData(
         backgroundColor: Colors.white,
@@ -34,7 +34,7 @@ class MyTheme {
               topRight: Radius.circular(15)
           ),
           side: BorderSide(
-            color: MyTheme.blackColor
+            color: MyTheme.whiteColor
           )
         )
       ),
@@ -59,11 +59,11 @@ class MyTheme {
          unselectedItemColor: Colors.white,
           showUnselectedLabels: true
       ),
-      appBarTheme:  AppBarTheme(
+      appBarTheme:  const AppBarTheme(
           color:primaryLight,
           elevation: 0,
           centerTitle: true,
-          iconTheme:IconThemeData(color: MyTheme.whiteColor)
+          iconTheme:IconThemeData(color: MyTheme.primaryLight)
       ),
       bottomSheetTheme:  BottomSheetThemeData(
           backgroundColor: MyTheme.primaryDark,

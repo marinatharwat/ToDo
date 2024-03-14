@@ -4,14 +4,14 @@ class Task {
   String title;
   String description;
   DateTime dateTime;
-  bool isDone;
+
 
   Task({
     this.id = '',
     required this.title,
     required this.description,
     required this.dateTime,
-    this.isDone = false,
+
   });
 
   factory Task.fromFireStore(Map<String, dynamic> data) {
@@ -20,7 +20,6 @@ class Task {
       title: data['title'] as String,
       description: data['description'] as String,
       dateTime: DateTime.fromMillisecondsSinceEpoch(data['dateTime'] as int),
-      isDone: data['isDone'] as bool,
     );
   }
 
@@ -30,7 +29,7 @@ class Task {
       'title': title,
       'description': description,
       'dateTime': dateTime.millisecondsSinceEpoch,
-      'isDone': isDone,
     };
   }
+
 }

@@ -25,7 +25,11 @@ class _BottomThemeSheetState extends State<BottomThemeSheet> {
           provider.isDarkMode()
               ? MyTheme.primaryDark
               : MyTheme.whiteColor,
-          borderRadius: BorderRadius.circular(10)),
+          borderRadius: BorderRadius.circular(10),
+
+
+      ),
+
       child: Padding(
         padding: const EdgeInsets.all(8.0),
         child: Padding(
@@ -41,7 +45,7 @@ class _BottomThemeSheetState extends State<BottomThemeSheet> {
                   getSelectedItemWidget(AppLocalizations.of(context)!.dark):
                   getUnSelectedItemWidget(AppLocalizations.of(context)!.dark)
               ),
-              SizedBox(height: 40),
+              const SizedBox(height: 40),
               GestureDetector(
                   onTap: (){
                     provider.ChangeTheme(ThemeMode.light);
