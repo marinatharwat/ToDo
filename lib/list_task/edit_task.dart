@@ -1,41 +1,36 @@
-import 'package:firebase_auth/firebase_auth.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:todo/dialog_utils.dart';
+import 'package:todo/Auth/cusom_text_field.dart';
 import 'package:todo/firebase_utils.dart';
-import 'package:todo/my_theme.dart';
-import 'package:todo/providers/app_confing_provider.dart';
 import 'package:todo/model/task.dart';
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
-import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:todo/providers/auth.provider.dart';
 import 'package:todo/setting/dialogs.dart';
+class UpdateNoteScreen extends StatefulWidget {
+  static const String routeName = "updateNote";
 
-
-class UpdateTaskScreen extends StatefulWidget {
-  static const String  routeName='updateNote';
-  final Task task;
-
-  UpdateTaskScreen({Key? key, required this.task}) : super(key: key);
-
+  const UpdateNoteScreen({super.key});
 
   @override
-  State<UpdateTaskScreen> createState() => _UpdateTaskScreenState();
+  State<UpdateNoteScreen> createState() => _UpdateNoteScreenState();
 }
 
-class _UpdateTaskScreenState extends State<UpdateTaskScreen> {
+class _UpdateNoteScreenState extends State<UpdateNoteScreen> {
   GlobalKey<FormState> formKey = GlobalKey<FormState>();
+
   TextEditingController title = TextEditingController();
-  TextEditingController description = TextEditingController();
+  TextEditingController content = TextEditingController();
   Task? task;
-  late AppConfigProvider provider;
+
   @override
   Widget build(BuildContext context) {
     if (task == null) {
       task = ModalRoute.of(context)?.settings.arguments as Task;
-      title.text = task!.title!;
-      description.text = task!.description!;
+      title.text = task!.title;
+      content.text = task!.description;
       selectedDate = DateTime.fromMillisecondsSinceEpoch(
-          task!.dateTime?.millisecondsSinceEpoch ?? 0);
+          task!.dateTime.millisecondsSinceEpoch ?? 0);
     }
     return Scaffold(
       body: SingleChildScrollView(
@@ -46,7 +41,7 @@ class _UpdateTaskScreenState extends State<UpdateTaskScreen> {
               right: 45,
               bottom: MediaQuery.of(context).viewInsets.bottom + 50),
           decoration:
-          BoxDecoration(color: Theme.of(context).colorScheme.onBackground),
+          const BoxDecoration(color: Colors.cyanAccent),
           child: Form(
             key: formKey,
             child: Column(
@@ -57,55 +52,57 @@ class _UpdateTaskScreenState extends State<UpdateTaskScreen> {
                   textAlign: TextAlign.center,
                   style: Theme.of(context).textTheme.bodyMedium,
                 ),
-                const SizedBox(
+                SizedBox(
                   height: 15,
                 ),
-                TextFormField(
-                  onChanged: (text) {
-                    title = title;
-                  },
-                  validator: (text) {
-                    if (text == null || text.isEmpty) {
-                      return AppLocalizations.of(context)?.please_title;
+                CustomTextField(
+                  hint: 'enter your task title',
+                  control: title,
+                  maxline: 2,
+                  minline: 1,
+                  hintStyle: Theme.of(context)
+                      .textTheme
+                      .labelMedium
+                      ?.copyWith(height: 2),
+                  textStyle: Theme.of(context).textTheme.labelSmall?.copyWith(
+                    fontSize: 20,
+                    height: 2,
+                  ),
+                  withBoarder: true,
+                  check: (text) {
+                    if (text == null || text.trim().isEmpty) {
+                      return 'Please enter task title';
+                    } else {
+                      return null;
                     }
-                    return null;
                   },
-                  style: TextStyle(
-                    color: provider.isDarkMode() ? Colors.white : Colors.black, // Set text color based on dark mode
-                  ),
-                  decoration:  InputDecoration(
-                    hintText: AppLocalizations.of(context)?.enter_task_title,
-
-                    hintStyle:  TextStyle(fontSize: 16,color:provider.isDarkMode()?
-                    MyTheme.whiteColor:
-                    MyTheme.blackColor, ),
-                  ),
                 ),
                 SizedBox(
                   height: 15,
                 ),
-                TextFormField(
-                  onChanged: (text) {
-                    description = description;
-                  },
-                  validator: (text) {
-                    if (text == null || text.isEmpty) {
-                      return AppLocalizations.of(context)?.please_description;
+                CustomTextField(
+                  hint: 'enter your task details',
+                  control: content,
+                  maxline: 10,
+                  minline: 1,
+                  hintStyle: Theme.of(context)
+                      .textTheme
+                      .labelMedium
+                      ?.copyWith(fontSize: 15, height: 2),
+                  textStyle: Theme.of(context)
+                      .textTheme
+                      .labelSmall
+                      ?.copyWith(height: 2),
+                  withBoarder: true,
+                  check: (text) {
+                    if (text == null || text.trim().isEmpty) {
+                      return 'Please enter task content';
+                    } else {
+                      return null;
                     }
-                    return null;
                   },
-                  style: TextStyle(
-                    color: provider.isDarkMode() ? Colors.white : Colors.black, // Set text color based on dark mode
-                  ),
-                  decoration:  InputDecoration(
-                    hintText: AppLocalizations.of(context)?.enter_task_description,
-                    hintStyle:  TextStyle(fontSize: 16,color:provider.isDarkMode()?
-                    MyTheme.whiteColor:
-                    MyTheme.blackColor, ),
-                  ),
-                  maxLines: 4,
                 ),
-                const SizedBox(
+                SizedBox(
                   height: 25,
                 ),
                 InkWell(
@@ -152,22 +149,22 @@ class _UpdateTaskScreenState extends State<UpdateTaskScreen> {
                   child: TextButton(
                     onPressed: () async {
                       var authProvider =
-                      Provider.of<AuthProvider>(context, listen: false);
+                      Provider.of<AuthProviders>(context, listen: false);
                       var finalDate = Timestamp.fromMillisecondsSinceEpoch(
                           selectedDate?.millisecondsSinceEpoch ?? 0);
-                      if (description.text == task!.description &&
+                      if (content.text == task!.description &&
                           title.text == task!.title &&
                           finalDate == task!.dateTime) {
                         print('no changes');
                         return;
                       }
                       task!.title = title.text;
-                      task!.description = description.text;
-                      // task!.dateTime = finalDate;
+                      task!.description = content.text;
+                      // task!.dateTime = fi;
                       try {
-                        DialogUtils.showMessage(
-                            context:context, message: 'Add Task... ');
-                        await FirebaseUtils.updateTask(authProvider.providerId,
+                        Dialogs.showLoadingDialog(context, 'Add Task...',
+                            isCanceled: false);
+                        await FirebaseUtils.updateTask(authProvider.currentUser?.id,
                             task!.id, task!.toFirestore());
                         Dialogs.closeMessageDialog(context);
                         Dialogs.showMessageDialog(

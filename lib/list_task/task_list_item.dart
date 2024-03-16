@@ -1,132 +1,142 @@
-import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_slidable/flutter_slidable.dart';
 import 'package:provider/provider.dart';
-import 'package:todo/dialog_utils.dart';
 import 'package:todo/firebase_utils.dart';
 import 'package:todo/model/task.dart';
 import 'package:todo/my_theme.dart';
-import 'package:todo/providers/app_confing_provider.dart';
-import 'package:todo/providers/auth.provider.dart';
-import 'package:todo/providers/auth.provider.dart';
-import 'package:todo/providers/auth.provider.dart';
 import 'package:todo/providers/auth.provider.dart';
 import 'package:todo/setting/dialogs.dart';
-
+import '../providers/app_confing_provider.dart';
 import 'edit_task.dart';
 class ItemTask extends StatefulWidget {
   late final Task task;
-  ItemTask? show;
-  ItemTask({Key? key, required this.task,this.show}) : super(key: key);
 
+  ItemTask({Key? key, required this.task, }) : super(key: key);
   @override
   State<ItemTask> createState() => _ItemTaskState();
 }
-
+CrossFadeState crossFadeState = CrossFadeState.showFirst;
+Color titleColor = const Color(0xFF82B1FF);
+bool isDone = false;
 class _ItemTaskState extends State<ItemTask> {
-  bool isDone = false;
-
-
-
-  @override
   Widget build(BuildContext context) {
     var provider = Provider.of<AppConfigProvider>(context);
-    var authProvider = Provider.of<AuthProviders>(context, listen: false);
-    CrossFadeState crossFadeState = CrossFadeState.showFirst;
 
-    return  InkWell(
-      onTap: () {
-        // widget.show?.call(widget.task?.title, widget.task?.description);
-      },
-      child: Container(
-        margin:  EdgeInsets.all(10),
+    var dateOfTask = DateTime.fromMillisecondsSinceEpoch(
+        widget.task.dateTime.millisecondsSinceEpoch ?? 0);
+    return Padding(
+      padding: const EdgeInsets.all(8.0),
+      child: SizedBox(
+        height: 150,
         child: Slidable(
-          key: UniqueKey(),
           startActionPane: ActionPane(
-            extentRatio: 0.25,
-            motion:  DrawerMotion(),
-            dismissible: DismissiblePane(onDismissed: () {}),
+            motion: const ScrollMotion(),
             children: [
               SlidableAction(
                 onPressed: (sliderContext) {
                   var authProvider = Provider.of<AuthProviders>(context, listen: false);
                   Dialogs.showMessageDialog(
-                      context, 'task delete',
-                      icon: Icon(
-                        Icons.warning,
-                        color: Colors.yellow[800],
-                      ),
-                      positiveActionText: '.yes',
-                      positiveAction: () {
-                        FirebaseUtils.deleteTask(
-                            authProvider.currentUser?.id, widget.task.id);
-                      },
-                      negativeActionText: 'no',
-                      negativeAction: () {
-                        Navigator.pop(context);
-                      }
+                    context,
+                    'delete',
+                    icon: Icon(
+                      Icons.warning,
+                      color: Colors.yellow[800],
+                    ),
+                    positiveActionText: 'yes',
+                    positiveAction: () {
+                      FirebaseUtils.deleteTask(
+                          authProvider.currentUser?.id,
+                          widget.task.id
+                      );
+                     setState(() {
+
+                     });
+                    },
+                    negativeActionText: 'no',
+                    negativeAction: () {
+                      Navigator.pop(context);
+                    },
                   );
                 },
-
-
-
-                borderRadius: const BorderRadius.only(
-                  bottomLeft: Radius.circular(15),
-                  bottomRight: Radius.zero,
-                  topLeft: Radius.circular(15),
-                  topRight: Radius.zero,
-                ),
-                backgroundColor: MyTheme.redDark,
-                foregroundColor: MyTheme.whiteColor,
                 icon: Icons.delete,
-                label: 'Delete',
+                backgroundColor: Colors.red,
+                label: 'delete',
+                borderRadius: BorderRadius.circular(15),
+              ),
+            ],
+          ),
+          endActionPane: ActionPane(
+            motion: const DrawerMotion(),
+            children: [
+              SlidableAction(
+                foregroundColor: Colors.white,
+                onPressed: (slidableContext) {
+                  Navigator.pushNamed(context, UpdateNoteScreen.routeName,
+                      arguments: widget.task);
+                },
+                icon: Icons.edit,
+                backgroundColor: const Color(0xFF0daec7),
+                label: 'Edit',
+                borderRadius: BorderRadius.circular(15),
               ),
             ],
           ),
           child: Container(
+            width: 352,
+            height: 110,
+            padding: const EdgeInsets.symmetric(vertical: 20, horizontal: 20),
             decoration: BoxDecoration(
+              color: provider.isDarkMode() ? Colors.black : MyTheme.redDark,
               borderRadius: BorderRadius.circular(15),
-              color: provider.isDarkMode()
-                  ? MyTheme.primaryDark
-                  : MyTheme.whiteColor,
             ),
             child: Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
-                Padding(
-                  padding: const EdgeInsets.all(18.0),
-                  child: Container(
-                    height: MediaQuery.of(context).size.height / 13,
-                    width: 4,
-                    decoration: BoxDecoration(
-                      borderRadius: BorderRadius.circular(30),
-                      color: MyTheme.primaryLight,
-                    ),
-                  ),
+                Container(
+                  decoration: BoxDecoration(
+                      color: Colors.cyan,
+                      borderRadius: BorderRadius.circular(10)),
+                  width: 4,
+                  height: double.infinity,
+                ),
+                const SizedBox(
+                  width: 20,
                 ),
                 Expanded(
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      Text(widget.task.title,
-                          style: Theme.of(context)
-                              .textTheme
-                              .titleMedium
-                              ?.copyWith(
-                            color: MyTheme.primaryLight,
-                          )),
-                      Text(widget.task.description,
-                          style: Theme.of(context)
-                              .textTheme
-                              .titleMedium
-                              ?.copyWith(
-                            color: provider.isDarkMode()
-                                ? MyTheme.whiteColor
-                                : MyTheme.blackColor,
-                          )),
+                      const SizedBox(
+                        height: 10,
+                      ),
+                      Text(
+                        widget.task.title ?? '',
+                        style: const TextStyle(color: Colors.cyan),
+                        overflow: TextOverflow.ellipsis,
+                      ),
+
+                      Text(
+                        widget.task.description ?? '',
+                        overflow: TextOverflow.ellipsis,
+                        maxLines: 1,
+                        style: Theme.of(context)
+                            .textTheme
+                            .bodySmall
+                            ?.copyWith(fontSize: 13),
+                      ),
+
+                      Row(
+                        children: [
+                          Text(
+                            '${dateOfTask.day} / ${dateOfTask.month} / ${dateOfTask.year}',
+                            style: Theme.of(context).textTheme.bodySmall,
+                          )
+                        ],
+                      )
                     ],
                   ),
+                ),
+                const SizedBox(
+                  width: 20,
                 ),
                 Padding(
                   padding: const EdgeInsets.all(8.0),

@@ -44,7 +44,7 @@ late AppConfigProvider provider;
           HomeScreen.routeName :(context) => const HomeScreen(),
           RegisterScreen.routeName:(context) => const RegisterScreen(),
           LoginScreen.routeName:(context) => const LoginScreen(),
-          // UpdateTaskScreen.routeName: (context) => UpdateTaskScreen(),
+          UpdateNoteScreen.routeName: (context) => UpdateNoteScreen()
         },
       theme: MyTheme.lightMode,
       locale: Locale(provider.appLanguage),

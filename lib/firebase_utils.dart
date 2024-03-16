@@ -65,11 +65,11 @@ class FirebaseUtils {
 
 
 
-  static Future<void> deleteTask(String? uId, String? taskId) async {
-    var taskCollection = getTasksCollection(uId!); // Pass the actual uId here
-    await taskCollection.doc(taskId).delete(); // No need for 'return' since delete() returns void
-  }
 
+  static Future<void> deleteTask(String? uId, String? taskId) async {
+    var taskCollection = getTasksCollection(uId!);
+    return await taskCollection.doc(taskId).delete();
+  }
 
 }
 

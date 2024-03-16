@@ -62,10 +62,7 @@ class _ListTaskScreenState extends State<ListTaskScreen> {
           child: ListView.builder(
             itemCount: provider.tasksList.length,
             itemBuilder: (context, index) {
-              return Padding(
-                padding: const EdgeInsets.symmetric(vertical: 8.0),
-                child: ItemTask(task: provider.tasksList[index]),
-              );
+              return ItemTask(task: provider.tasksList[index],);
             },
           ),
         ),
