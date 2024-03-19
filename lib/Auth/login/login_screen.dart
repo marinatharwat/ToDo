@@ -49,7 +49,7 @@ class _LoginScreenState extends State<LoginScreen> {
           appBar: AppBar(
               backgroundColor: Colors.transparent,
               title: Text(
-              AppLocalizations.of(context)!.task_list,
+              AppLocalizations.of(context)!.login,
                 style: TextStyle(color: MyTheme.whiteColor),
               ),
           ),

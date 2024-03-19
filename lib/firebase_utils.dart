@@ -3,7 +3,7 @@ import 'package:todo/model/my_user.dart';
 import 'package:todo/model/task.dart';
 
 class FirebaseUtils {
-
+  static var date = DateTime.now();
   static CollectionReference<Task> getTasksCollection(String uId) {
     return getUserCollection().doc(uId)
         .collection(Task.collectionName)
@@ -26,6 +26,19 @@ class FirebaseUtils {
     }
   }
 
+  static Stream<List<Task>> getSearchTasks(String userId) async* {
+    var filter = date.copyWith(
+        microsecond: 0, millisecond: 0, second: 0, minute: 0, hour: 0);
+    var taskCollection = getTasksCollection(userId);
+    var tasksSnapshot = taskCollection
+        .where('date',
+        isEqualTo: Timestamp.fromMillisecondsSinceEpoch(
+            filter.millisecondsSinceEpoch))
+        .snapshots();
+    var snapShots = tasksSnapshot
+        .map((snapshots) => snapshots.docs.map((e) => e.data()).toList());
+    yield* snapShots;
+  }
 
  static   CollectionReference <MyUser> getUserCollection(){
  return  FirebaseFirestore.instance.collection(MyUser.collectionName).

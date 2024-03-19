@@ -2,11 +2,15 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:todo/Auth/cusom_text_field.dart';
+import 'package:todo/Auth/custom_text_from_field.dart';
 import 'package:todo/firebase_utils.dart';
 import 'package:todo/model/task.dart';
+import 'package:todo/my_theme.dart';
+import 'package:todo/providers/app_confing_provider.dart';
 import 'package:todo/providers/auth.provider.dart';
 import 'package:todo/setting/dialogs.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+
 class UpdateNoteScreen extends StatefulWidget {
   static const String routeName = "updateNote";
 
@@ -25,6 +29,8 @@ class _UpdateNoteScreenState extends State<UpdateNoteScreen> {
 
   @override
   Widget build(BuildContext context) {
+    var provider = Provider.of<AppConfigProvider>(context);
+
     if (task == null) {
       task = ModalRoute.of(context)?.settings.arguments as Task;
       title.text = task!.title;
@@ -33,76 +39,71 @@ class _UpdateNoteScreenState extends State<UpdateNoteScreen> {
           task!.dateTime.millisecondsSinceEpoch ?? 0);
     }
     return Scaffold(
+      appBar: AppBar(
+        title: Text(
+          'Update Task',
+          textAlign: TextAlign.center,
+          style: Theme.of(context).textTheme.titleLarge?.copyWith(
+            color:  MyTheme.whiteColor
+          ),
+        ),
+        iconTheme: const IconThemeData(
+          color: Colors.white,
+        ),
+      ),
+      backgroundColor
+      : provider.isDarkMode() ? MyTheme.blackPrimaryDark : MyTheme.lightGreen,
       body: SingleChildScrollView(
+
         child: Container(
           padding: EdgeInsets.only(
-              top: MediaQuery.of(context).viewInsets.top + 100,
+              top: MediaQuery.of(context).viewInsets.top + 200,
               left: 45,
               right: 45,
-              bottom: MediaQuery.of(context).viewInsets.bottom + 50),
+              ),
           decoration:
-          const BoxDecoration(color: Colors.cyanAccent),
+           BoxDecoration(color: provider.isDarkMode() ? MyTheme.blackPrimaryDark : MyTheme.lightGreen,),
           child: Form(
             key: formKey,
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.stretch,
               children: [
-                Text(
-                  'Update Task',
-                  textAlign: TextAlign.center,
-                  style: Theme.of(context).textTheme.bodyMedium,
-                ),
-                SizedBox(
+
+                const SizedBox(
                   height: 15,
                 ),
-                CustomTextField(
-                  hint: 'enter your task title',
-                  control: title,
-                  maxline: 2,
-                  minline: 1,
-                  hintStyle: Theme.of(context)
-                      .textTheme
-                      .labelMedium
-                      ?.copyWith(height: 2),
-                  textStyle: Theme.of(context).textTheme.labelSmall?.copyWith(
-                    fontSize: 20,
-                    height: 2,
-                  ),
-                  withBoarder: true,
-                  check: (text) {
+                CustomFromField(
+                  label: AppLocalizations.of(context)!.enter_task_title,
+                  controller: title,
+                  validator: (text) {
                     if (text == null || text.trim().isEmpty) {
-                      return 'Please enter task title';
+                      return AppLocalizations.of(context)?.please_title;
                     } else {
                       return null;
                     }
                   },
+                  labelColor:provider.isDarkMode()?
+                  MyTheme.whiteColor:
+                  MyTheme.blackColor,
                 ),
-                SizedBox(
+                const SizedBox(
                   height: 15,
                 ),
-                CustomTextField(
-                  hint: 'enter your task details',
-                  control: content,
-                  maxline: 10,
-                  minline: 1,
-                  hintStyle: Theme.of(context)
-                      .textTheme
-                      .labelMedium
-                      ?.copyWith(fontSize: 15, height: 2),
-                  textStyle: Theme.of(context)
-                      .textTheme
-                      .labelSmall
-                      ?.copyWith(height: 2),
-                  withBoarder: true,
-                  check: (text) {
+                CustomFromField(
+                  label: AppLocalizations.of(context)!.enter_task_description,
+                  controller: content,
+                  validator: (text) {
                     if (text == null || text.trim().isEmpty) {
-                      return 'Please enter task content';
+                      return  AppLocalizations.of(context)?.please_description;
                     } else {
                       return null;
                     }
                   },
+                  labelColor:provider.isDarkMode()?
+                  MyTheme.whiteColor:
+                  MyTheme.blackColor,
                 ),
-                SizedBox(
+                const SizedBox(
                   height: 25,
                 ),
                 InkWell(
@@ -111,7 +112,9 @@ class _UpdateNoteScreenState extends State<UpdateNoteScreen> {
                   },
                   child: Text(
                     'Select date',
-                    style: Theme.of(context).textTheme.labelMedium,
+                    style: TextStyle(fontSize: 16,color:provider.isDarkMode()?
+                    MyTheme.whiteColor:
+                    MyTheme.blackColor, ),
                   ),
                 ),
                 SizedBox(
@@ -122,7 +125,9 @@ class _UpdateNoteScreenState extends State<UpdateNoteScreen> {
                   child: Text(
                     'please enter date',
                     style: TextStyle(
-                      color: Theme.of(context).colorScheme.error,
+                     color:provider.isDarkMode()?
+                    MyTheme.whiteColor:
+                    MyTheme.blackColor,
                       fontSize: 12,
                       fontWeight: FontWeight.normal,
                       fontFamily: '',
@@ -136,18 +141,20 @@ class _UpdateNoteScreenState extends State<UpdateNoteScreen> {
                   style: Theme.of(context)
                       .textTheme
                       .labelMedium
-                      ?.copyWith(fontSize: 18),
+                      ?.copyWith(fontSize: 18,color:provider.isDarkMode()?
+                  MyTheme.whiteColor:
+                  MyTheme.blackColor, ),
                   textAlign: TextAlign.center,
                 ),
-                SizedBox(
+                const SizedBox(
                   height: 20,
                 ),
                 Container(
-                  decoration: BoxDecoration(
-                    color: Theme.of(context).colorScheme.primary,
+                  decoration: const BoxDecoration(
+                    color:MyTheme.primaryLight,
                   ),
                   child: TextButton(
-                    onPressed: () async {
+                    onPressed: ()  {
                       var authProvider =
                       Provider.of<AuthProviders>(context, listen: false);
                       var finalDate = Timestamp.fromMillisecondsSinceEpoch(
@@ -160,22 +167,22 @@ class _UpdateNoteScreenState extends State<UpdateNoteScreen> {
                       }
                       task!.title = title.text;
                       task!.description = content.text;
-                      // task!.dateTime = fi;
+                      task!.dateTime = finalDate.toDate();
                       try {
                         Dialogs.showLoadingDialog(context, 'Add Task...',
                             isCanceled: false);
-                        await FirebaseUtils.updateTask(authProvider.currentUser?.id,
+                         FirebaseUtils.updateTask(authProvider.currentUser?.id,
                             task!.id, task!.toFirestore());
                         Dialogs.closeMessageDialog(context);
                         Dialogs.showMessageDialog(
                           context,
-                          'Task added successfully',
+                          'Task update successfully',
                           isClosed: false,
                           positiveActionText: 'Ok',
                           positiveAction: () {
                             Navigator.pop(context);
                           },
-                          icon: Icon(
+                          icon: const Icon(
                             Icons.check_circle_sharp,
                             color: Colors.green,
                             size: 30,
@@ -185,13 +192,13 @@ class _UpdateNoteScreenState extends State<UpdateNoteScreen> {
                         Dialogs.closeMessageDialog(context);
                         Dialogs.showMessageDialog(
                             context, 'some thing went wrong',
-                            icon: Icon(
+                            icon: const Icon(
                               Icons.error,
                               color: Colors.red,
                             ));
                       }
                     },
-                    child: Text(
+                    child: const Text(
                       'Ubdate Task',
                       style: TextStyle(
                         color: Colors.white,
@@ -217,7 +224,7 @@ class _UpdateNoteScreenState extends State<UpdateNoteScreen> {
         initialDate: selectedDate ?? DateTime.now(),
         firstDate: DateTime.now(),
         lastDate: DateTime.now().add(
-          Duration(days: 365),
+          const Duration(days: 365),
         ));
     selectedDate = date;
     setState(() {
