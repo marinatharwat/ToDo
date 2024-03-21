@@ -61,7 +61,7 @@ class AppConfigProvider extends ChangeNotifier {
     notifyListeners();
   }
 
-  void changeSelectDate(DateTime newSelectDate,String uId){
+   changeSelectDate(DateTime newSelectDate,String uId){
     selectDate= newSelectDate;
     getAllTasksFromFireStore(uId);
   }

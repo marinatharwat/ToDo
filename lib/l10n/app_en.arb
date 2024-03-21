@@ -31,7 +31,12 @@
    "confirm_password":"Confirm Password",
    "please_confirm_password":"please Enter Confirm Password",
    "dont_match" :"Confirm password don't match password",
-   "login_successfully":"تم تسجيل الدخول بنجاح",
-   "register_successfully":"تم التسجيل بنجاح"
+      "login_successfully":"Login Successfully",
+                 "register_successfully":"Register successfully",
+                 "success":"Success",
+                 "ok":"ok",
+                   "delete":"Delete",
+                                                 "edit":"Edit "
 
-}
+  }
+

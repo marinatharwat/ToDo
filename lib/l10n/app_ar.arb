@@ -30,6 +30,11 @@
             "confirm_password":"تأكيد كلمة المرور",
             "please_confirm_password":"الرجاء إدخال تأكيد كلمة المرور",
             "dont_match" :"تأكيد كلمة المرور لا تطابق كلمة المرور",
-             "login_successfully":"Login Successfully",
-               "register_successfully":"Register successfully"
+             "login_successfully":"تم تسجيل الدخول بنجاح",
+               "register_successfully":"تم التسجيل بنجاح",
+               "success":"النجاح",
+                                "ok":"حسنا",
+                                "delete":"حذف",
+                                "edit":"تعديل "
+
 }

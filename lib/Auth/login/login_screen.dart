@@ -159,9 +159,9 @@ class _LoginScreenState extends State<LoginScreen> {
          }
         var  authProvider= Provider.of<AuthProviders>(context,listen: false);
         authProvider.updateUser(user);
-        DialogUtils.showMessage(context: context, message: "Login successfully",
-            title: "success",
-             posActionNamed: "ok",
+        DialogUtils.showMessage(context: context, message: AppLocalizations.of(context)!.login_successfully,
+            title:AppLocalizations.of(context)!.success,
+             posActionNamed: AppLocalizations.of(context)!.ok,
              posAction: (){
           Navigator.pushReplacementNamed(context, HomeScreen.routeName);
              });
